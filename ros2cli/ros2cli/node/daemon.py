@@ -27,9 +27,14 @@ from ros2cli.daemon import get_daemon_port
 from ros2cli.node.direct import DirectNode
 
 
+def is_Linux_style_socket():
+    return platform.system() != 'Windows' and\
+        os.environ.get("WSL_DISTRO_NAME") is None
+
+
 def is_daemon_running(args):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if platform.system() != 'Windows':
+    if is_Linux_style_socket():
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     addr = ('localhost', get_daemon_port())
     try:
